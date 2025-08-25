@@ -22,7 +22,6 @@ WORKDIR /cli-app
 COPY code.py /cli-app
 CMD [ "python", "code.py" ]
 ```
-The base image is `python:3.9-slim`, and the working directory of the container is `/cli-app`. The only file that is being copied to the container is `code.py`. 
 
 2. **Build the Docker Image**
 
@@ -107,6 +106,8 @@ To stop the container and exit the application, simply type `4`. This will exit 
 # Deploying the Application on GKE
 
 ## Steps to Deploy on GKE
+
+In GCP console, used Cloud Shell to execute the deployment.
 
 1. **Authenticate GCP CLI**
 

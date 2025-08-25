@@ -184,7 +184,6 @@ Apply the Kubernetes configuration to deploy the app:
 
 ```
 kubectl create -f deployment.yaml
-kubectl create -f service.yaml
 ```
 
 7. **Verify Deployment**

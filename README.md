@@ -41,10 +41,10 @@ This will:
 After building the Docker image, tag the image for Docker Hub:
 
 ```
-docker tag todo_list_image:v1 moina512/python-todo-list-repo:latest
+docker tag todo_list_image:v1 moina512/python-todo-list-repo:v1
 ```
 
-This command tags the local image `todo_list_image:v1` with the appropriate repository name and tag `moina512/python-todo-list-repo:latest`.
+This command tags the local image `todo_list_image:v1` with the appropriate repository name and tag `moina512/python-todo-list-repo:v1`.
 
 4. **Log in to Docker Hub**
 
@@ -59,17 +59,17 @@ You will be prompted to enter your Docker Hub username and password.
 Push the tagged image to a Docker Hub repository:
 
 ```
-docker push moina512/python-todo-list-repo:latest
+docker push moina512/python-todo-list-repo:v1
 ```
 
-This command uploads the image to Docker Hub under the `moina512/python-todo-list-repo` repository with the `latest` tag. The image is now accessible from any machine.
+This command uploads the image to Docker Hub under the `moina512/python-todo-list-repo` repository with the `v1` tag. The image is now accessible from any machine.
 
 6. **Run the Docker Container (on any machine)**
 
 Once the image is uploaded to Docker Hub, run the Docker container from the image with the following command:
 
 ```
-docker run -it --rm moina512/python-todo-list-repo:latest
+docker run -it --rm moina512/python-todo-list-repo:v1
 ```
 
 - The `-it` flag allows interactive mode so you can interact with the application.
@@ -111,7 +111,7 @@ In GCP console, used Cloud Shell to execute the deployment.
 
 1. **Authenticate GCP CLI**
 
-Start by authenticating your GCP account: 
+Start by authenticating the GCP account: 
 
 ```
 gcloud auth login
@@ -119,7 +119,7 @@ gcloud auth login
 
 2. **Set the GCP Project**
 
-Set the project you want to work with:
+Set the project to work with:
 
 ```
 gcloud config set project PROJECT_ID
@@ -127,7 +127,7 @@ gcloud config set project PROJECT_ID
 
 3. **Create a GKE Cluster**
 
-You can create a GKE cluster using the following command:
+Create a GKE cluster using the following command:
 
 ```
 gcloud container clusters create CLUSTER_NAME \
@@ -143,9 +143,9 @@ Configure `kubectl` to interact with the GKE cluster:
 gcloud container clusters get-credentials CLUSTER_NAME --zone ZONE --project PROJECT_ID
 ```
 
-5. **Create Kubernetes Deployment and Service**
+5. **Create Kubernetes Deployment**
 
-Define two Kubernetes resources: a **Deployment** to manage the application pods, and a **Service** to expose the app externally. Save these resources in YAML files (`deployment.yaml` and `service.yaml`).
+Define a **Deployment** resource to manage the application pods i.e. `deployment.yaml`.
 
 - `deployment.yaml`
 
@@ -168,7 +168,7 @@ spec:
     spec:
       containers:
       - name: todo-c
-        image: moina512/python-todo-list-repo:latest
+        image: moina512/python-todo-list-repo:v1
         command: ["python", "code.py"]
         stdin: true #enable interactive input
         tty: true #allocate TTY for interactive sessions
@@ -177,25 +177,6 @@ spec:
 ```
 
 The **Deployment** will pull the Docker image from DockerHub and run it in the Kubernetes cluster.
-
-- `service.yaml`
-
-```
-apiVersion: v1
-kind: Service
-metadata:
-  name: todo-app-service
-spec:
-  type: LoadBalancer
-  selector:
-    app: todo-list
-  ports:
-    - protocol: TCP
-      port: 80 #exposed port for external access
-      targetPort: 80 #port inside the container
-```
-
-The **Service** will expose the app via a LoadBalancer, allowing external access to the application on port 80.
 
 6. **Deploy to GKE**
 
@@ -216,16 +197,10 @@ kubectl get pods
 
 You should see a pod running with the name `todo-app-<random-string>`.
 
-7. **Get the External IP**
+7. **Access the App**
 
-To access the application from a web browser , find the external IP of the LoadBalancer service:
-
-```
-kubectl get svc todo-app-service
-```
-
-Look for the `EXTERNAL-IP` filed. Once the IP address is available, you should be able to access the To-Do List application in your browser by navigating to:
+Since this is a **CLI application**, it does not expose a web endpoint. We can **exec** into a running pod and interact with the Todo List inside the container.
 
 ```
-http://<EXTERNAL-IP>
+kubectl exec -it todo-app-<random-string> -- python code.py
 ```

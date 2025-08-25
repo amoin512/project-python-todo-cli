@@ -12,13 +12,6 @@ The project demonstrates the process of containerizing a Python application with
 - Data is stored in a text file 'todo_list.txt' to persist between sessions.
 - Docker containerization for easy deployment.
 
-## Requirements
-
-- **Python 3.x** (if running without Docker i.e. to test the code)
-- **Docker:** Make sure Docker is installed on your system.
-- **DockerHub account**
-- **Google Cloud Platform (GCP) account**
-
 ## How to Use:
 
 1. Clone the repository to your local machine
@@ -32,13 +25,13 @@ git clone https://github.com/amoin512/DevOps-Projects.git
 In the project directory, run the following Docker command to build the image:
 
 ```
-docker build -t todo_list_image:v1
+docker build -t todo_list_image:v1 .
 ```
 
 This will:
 - Use the `Dockerfile` to create a Docker image called `todo_list_image:v1`.
-- Sets the base image to `python:3.9-slim` and the working directory as `/app` and copies the contents of the current directory into the container.
-- Run the Python script `ToDoList_Code.py` to start the application.
+- Sets the base image to `python:3.9-slim` and the working directory as `/cli-app` and copies the `code.py` file into the container.
+- Run the Python script `code.py` to start the application.
 
 3. Tag the Docker Image to prepare for the Push
 
@@ -93,44 +86,14 @@ Once the container is running, the application will prmopt you with the followin
     [4] exit
 ```
 
-- [1] show task: Displays all tasks with their IDs, descriptions, and deadlines. 
-- [2] add task: Add a new task by providing a description and deadline. The task will be assigned a unique ID.
-- [3] complete task: Remove a task by entering its ID. This will mark as completed and delete it from the list.
-- [4] exit: Exit the application.
+- [1] **show task**: Displays all tasks with their IDs, descriptions, and deadlines. 
+- [2] **add task**: Add a new task by providing a description and deadline. The task will be assigned a unique ID.
+- [3] **complete task**: Remove a task by entering its ID. This will mark as completed and delete it from the list.
+- [4] **exit**: Exit the application.
 
 8. Stop the Docker Container
 
-To stop the container and exit the application, simply type:
-
-```
-4
-```
-This will exit the application and remove the container since `--rm` was used.
-
-## Example:
-
-Here's what interacting with the app might look like:
-
-```
-    == TODO LIST ==  
-    [1] show task    
-    [2] add task     
-    [3] complete task
-    [4] exit
-
-Your choice: 2
-What is your task? Finish Homework
-What is the deadline? Monday
-
-    == TODO LIST ==  
-    [1] show task    
-    [2] add task     
-    [3] complete task
-    [4] exit
-
-Your choice: 1
-bfff8c79-f19a-4fa4-9e6a-6cd25573eac9 | Finish Homework | Monday
-```
+To stop the container and exit the application, simply type `4`. This will exit the application and remove the container since `--rm` was used.
 
 ## Error Handling:
 

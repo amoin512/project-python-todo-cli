@@ -12,17 +12,21 @@ The project demonstrates the process of containerizing a Python application with
 - Data is stored in a text file 'todo_list.txt' to persist between sessions.
 - Docker containerization for easy deployment.
 
-## How to Use:
+## Steps Involved
 
-1. Clone the repository to your local machine
+1. **Define the Dockerfile**
 
 ```
-git clone https://github.com/amoin512/DevOps-Projects.git
+FROM python:3.9-slim
+WORKDIR /cli-app
+COPY code.py /cli-app
+CMD [ "python", "code.py" ]
 ```
+The base image is `python:3.9-slim`, and the working directory of the container is `/cli-app`. The only file that is being copied to the container is `code.py`. 
 
-2. Build the Docker Image
+2. **Build the Docker Image**
 
-In the project directory, run the following Docker command to build the image:
+In the directory of the `Dockerfile`, run the following Docker command to build the image:
 
 ```
 docker build -t todo_list_image:v1 .
@@ -33,17 +37,17 @@ This will:
 - Sets the base image to `python:3.9-slim` and the working directory as `/cli-app` and copies the `code.py` file into the container.
 - Run the Python script `code.py` to start the application.
 
-3. Tag the Docker Image to prepare for the Push
+3. **Tag the Docker Image to prepare for the Push**
 
-After building the Docker image, you can tag the image for Docker Hub:
+After building the Docker image, tag the image for Docker Hub:
 
 ```
 docker tag todo_list_image:v1 moina512/python-todo-list-repo:latest
 ```
 
-This command tags your local image `todo_list_image:v1` with the appropriate repository name and tag `moina512/python-todo-list-repo:latest`.
+This command tags the local image `todo_list_image:v1` with the appropriate repository name and tag `moina512/python-todo-list-repo:latest`.
 
-4. Log in to Docker Hub
+4. **Log in to Docker Hub**
 
 ```
 docker login
@@ -51,7 +55,7 @@ docker login
 
 You will be prompted to enter your Docker Hub username and password.
 
-5. Push the Docker Image to Docker Hub
+5. **Push the Docker Image to Docker Hub**
 
 Push the tagged image to a Docker Hub repository:
 
@@ -59,11 +63,11 @@ Push the tagged image to a Docker Hub repository:
 docker push moina512/python-todo-list-repo:latest
 ```
 
-This command uploads the image to Docker Hub under the `moina512/python-todo-list-repo` repository with the `latest` tag. You can now access this image from Docker Hub on any machine.
+This command uploads the image to Docker Hub under the `moina512/python-todo-list-repo` repository with the `latest` tag. The image is now accessible from any machine.
 
-6. Run the Docker Container (on any machine)
+6. **Run the Docker Container (on any machine)**
 
-Once the image is uploaded to Docker Hub, you can run the Docker container from the image with the following command:
+Once the image is uploaded to Docker Hub, run the Docker container from the image with the following command:
 
 ```
 docker run -it --rm moina512/python-todo-list-repo:latest
@@ -74,7 +78,7 @@ docker run -it --rm moina512/python-todo-list-repo:latest
 
 This step is to ensure that the application runs successfully as a container. 
 
-7. Interact with the To-To List Application
+7. **Interact with the To-To List Application**
 
 Once the container is running, the application will prmopt you with the following options:
 
@@ -91,7 +95,7 @@ Once the container is running, the application will prmopt you with the followin
 - [3] **complete task**: Remove a task by entering its ID. This will mark as completed and delete it from the list.
 - [4] **exit**: Exit the application.
 
-8. Stop the Docker Container
+8. **Stop the Docker Container**
 
 To stop the container and exit the application, simply type `4`. This will exit the application and remove the container since `--rm` was used.
 
@@ -104,7 +108,7 @@ To stop the container and exit the application, simply type `4`. This will exit 
 
 ## Steps to Deploy on GKE
 
-1. Authenticate GCP CLI
+1. **Authenticate GCP CLI**
 
 Start by authenticating your GCP account: 
 
@@ -112,7 +116,7 @@ Start by authenticating your GCP account:
 gcloud auth login
 ```
 
-2. Set the GCP Project
+2. **Set the GCP Project**
 
 Set the project you want to work with:
 
@@ -120,7 +124,7 @@ Set the project you want to work with:
 gcloud config set project PROJECT_ID
 ```
 
-3. Create a GKE Cluster
+3. **Create a GKE Cluster**
 
 You can create a GKE cluster using the following command:
 
@@ -130,7 +134,7 @@ gcloud container clusters create CLUSTER_NAME \
   --num-nodes 1
 ```
 
-4. Configure kubectl to USE GKE Cluster
+4. **Configure kubectl to USE GKE Cluster**
 
 Configure `kubectl` to interact with the GKE cluster:
 
@@ -138,7 +142,7 @@ Configure `kubectl` to interact with the GKE cluster:
 gcloud container clusters get-credentials CLUSTER_NAME --zone ZONE --project PROJECT_ID
 ```
 
-5. Create Kubernetes Deployment and Service
+5. **Create Kubernetes Deployment and Service**
 
 Define two Kubernetes resources: a **Deployment** to manage the application pods, and a **Service** to expose the app externally. Save these resources in YAML files (`deployment.yaml` and `service.yaml`).
 
@@ -164,7 +168,7 @@ spec:
       containers:
       - name: todo-c
         image: moina512/python-todo-list-repo:latest
-        command: ["python", "ToDoList_Code.py"]
+        command: ["python", "code.py"]
         stdin: true #enable interactive input
         tty: true #allocate TTY for interactive sessions
         ports:
@@ -192,7 +196,7 @@ spec:
 
 The **Service** will expose the app via a LoadBalancer, allowing external access to the application on port 80.
 
-6. Deploy to GKE
+6. **Deploy to GKE**
 
 Apply the Kubernetes configuration to deploy the app:
 
@@ -201,7 +205,7 @@ kubectl create -f deployment.yaml
 kubectl create -f service.yaml
 ```
 
-7. Verify Deployment
+7. **Verify Deployment**
 
 Check if the pod(s) is running successfully:
 
@@ -211,7 +215,7 @@ kubectl get pods
 
 You should see a pod running with the name `todo-app-<random-string>`.
 
-7. Get the External IP
+7. **Get the External IP**
 
 To access the application from a web browser , find the external IP of the LoadBalancer service:
 
